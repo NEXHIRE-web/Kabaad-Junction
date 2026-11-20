@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% if m.image_url %}
+  <img src="{{ m.image_url }}" alt="{{ m.material }}"
+       style="width:100%; max-width:500px; max-height:350px; object-fit:cover; border-radius:10px; display:block; margin:0 auto 15px;">
+      {% endif %}
+  <title>{{ m.material }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="detail">
+    <h2>{{ m.material }}</h2>
+    <p>मात्रा: {{ m.quantity }}</p>
+    <p>नाम: {{ m.name }}</p>
+    <p>मोबाइल: {{ m.mobile }}</p>
+    <p>पता: {{ m.address }}</p>
+    <p>🕒 {{ m.created_at|time_ago }}</p>
+    <a href="{{ url_for('newpage') }}">← वापस</a>
+  </div>
+</body>
+</html>

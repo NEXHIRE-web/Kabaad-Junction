@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scrap Materials</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h2 style="text-align:center">Scrap Materials</h2>
+  {% if not user %}
+    <p style="text-align:center">पूरी जानकारी देखने के लिए <a href="{{ url_for('home', login=1) }}">Sign in करें</a></p>
+  {% endif %}
+  <section class="materials">
+  {% for m in materials %}
+    {% if user %}
+      <a class="mcard" href="{{ url_for('material', material_id=m.id) }}">
+        {% if m.image_url %}
+          <img src="{{ m.image_url }}" alt="{{ m.material }}" style="width:100%; height:140px; object-fit:cover; border-radius:8px;">
+        {% endif %}
+        <h3>{{ m.material }}</h3>
+        <p>मात्रा: {{ m.quantity }}</p>
+        <p class = "city"> {{(m.address or'')[:25]}}</p>
+        <p style="font-size:0.85rem; color:#777;">🕒 {{ m.created_at|time_ago }}</p>
+        <p>विवरण देखें →</p>
+      </a>
+    {% else %}
+      <div class="mcard" style="pointer-events:none; opacity:.6; cursor:not-allowed;">
+        {% if m.image_url %}
+          <img src="{{ m.image_url }}" alt="{{ m.material }}" style="width:100%; height:140px; object-fit:cover; border-radius:8px;">
+        {% endif %}
+        <h3>{{ m.material }}</h3>
+        <p>मात्रा: {{ m.quantity }}</p>
+        <p style="font-size:0.85rem; color:#777;">🕒 {{ m.created_at|time_ago }}</p>
+        <p>🔒 Sign in करें</p>
+      </div>
+
+    {% endif %}
+    {% if m.sold is sameas true %}
+  <p style="color:green; font-weight:bold;">✅ बिक गया</p>
+{% elif user and (user.email == m.user_email or is_admin) %}
+  <form method="POST" action="/sold/{{ m.id }}" onsubmit="return confirm('माल बिक गया?')">
+    <button type="submit">✅ बिक गया</button>
+  </form>
+{% endif %}
+    {% if is_admin %}
+      <form method="POST" action="/delete/{{ m.id }}" onsubmit="return confirm('पक्का डिलीट करें?')">
+        <button type="submit">Delete</button>
+      </form>
+      <div class="cardwrap"></div>
+
+    {% endif %}
+  {% endfor %}
+</section>
+
+<p style="text-align:center"><a href="{{ url_for('home') }}">← वापस</a></p>
+</body>
+</html>

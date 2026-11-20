@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kabaad Junction</title>
+
+    <link rel="stylesheet" href="{{url_for('static',filename='style.css')}}">
+    <style>
+        :root {
+            --primary-color: #5c4033; /* Earthy human-made brown */
+            --secondary-color: #8c6d62;
+            --bg-color: #fcfbfa;
+            --card-bg: #ffffff;
+            --text-color: #2c221e;
+            --accent-color: #d7ccc8;
+        }
+        body {
+            font-family: 'Georgia', serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid #e0dcd8;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: var(--primary-color);
+        }
+
+        .signin-btn {
+            background-color: rgb(244, 5, 5);
+            color:white;
+            border: none;
+            padding: 14px 7px;
+            
+            font-size: 0.95rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+            position:absolute; right:10px; top:10px;
+        
+        }
+
+        .signin-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .main-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .hero-banner {
+            background-color: var(--accent-color);
+            padding: 40px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .hero-banner h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.2rem;
+            color: var(--primary-color);
+        }
+
+        .hero-banner p {
+            font-size: 1.1rem;
+            color:rgb(000,0000,000);
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+        }
+
+        .image-gallery {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .image-gallery img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #d0c8c0;
+        }
+
+        .action-section {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .add-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .add-btn:hover {
+            background-color: var(--primary-color);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #777;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .submit-form-btn {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .auth-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .auth-option-btn {
+            padding: 12px;
+            border: 2px solid black;
+            background: rgb(255,255,255);
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: background 0.2s;
+            color:black;
+        }
+
+        .auth-option-btn:hover {
+            background-color:black;
+            color:#f7f5f5;
+        }
+    </style>
+    </head>
+    <body>
+
+    <header>
+        <div class="logo">Kabaad Junction</div>
+        {% if user %}
+            <a class="signin-btn" href="/logout" style="text-decoration:none;">{{ user.name }} · Logout</a>
+        {% else %}
+            <button class="signin-btn" onclick="openAuthModal()">Sign in</button>
+        {% endif %}
+    </header>
+
+    <div class="main-container">
+        <div class="hero-banner">
+            <h1>Kabaad Junction</h1>
+            <p>The Biggest digital link between scrap godowns to factories</p>
+            <div class="image-gallery">
+                <img src="https://img.magnific.com/free-photo/dirty-dumped-objects-arrangement_23-2148996943.jpg" alt="Iron Scrap">
+                <img src="https://5.imimg.com/data5/SELLER/Default/2025/6/521893492/WT/HJ/LK/30432647/waste-plastic-scrap-500x500.jpg" alt="Plastic">
+            </div>
+        </div>
+
+        <div class="action-section">
+            <button class="add-btn" onclick="{{ 'openFormModal()' if user else 'openAuthModal()' }}">+ Add Your scrap Material</button>
+                </div>
+    </div>
+
+    <div style="text-align:center; margin-top:20px;">
+        <a href="/newpage"><button>Click here</button></a>
+    </div>
+
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeAuthModal()">&times;</span>
+            <h2 style="margin-top: 0; color: var(--primary-color);">Sign in</h2>
+            <p style="font-size: 0.9rem; color: #0a0a0a;">Choose your preferred sign-in method:</p>
+            <div class="auth-options">
+                <button class="auth-option-btn" onclick="googleLogin()">
+                    <svg width="20" height="20" viewBox="0 0 48 48" style="vertical-align: middle; margin-right: 8px;">
+                        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                    </svg>
+                    continue with Google
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="formModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeFormModal()">&times;</span>
+        <h2 style="margin-top: 0; color: var(--primary-color);">List scrap Material</h2>
+
+        <form method="POST" action="{{ url_for('newpage') }}" enctype="multipart/form-data">
+
+            <div class="form-group">
+                <label>Enter Your Name</label>
+                <input type="text" name="name" placeholder="Your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label>Enter Your Mobile Number</label>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <span style="padding:10px 12px; border:1px solid #ccc; border-radius:6px; background:#f3f3f3;">+91</span>
+                    <input type="tel" name="mobile" placeholder="10 अंकों का नंबर"
+                           pattern="[6-9][0-9]{9}" maxlength="10" minlength="10"
+                           inputmode="numeric" style="flex:1;"
+                           oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                           title="सही 10 अंकों का मोबाइल नंबर डालिए (6-9 से शुरू)" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Enter Your Address</label>
+                <input type="text" name="address" placeholder="Complete address" required>
+            </div>
+
+            <div class="form-group">
+                <label>माल की फोटो</label>
+                <input type="file" name="photo" accept="image/*" capture="environment" required>
+            </div>
+
+            <div class="form-group">
+                <label>Enter Your Material Name</label>
+                <input type="text" name="material_name" placeholder="Iron, Plastic" required>
+            </div>
+
+            <div class="form-group">
+                <label>Quantity</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" name="quantity" placeholder="मात्रा" min="0" step="any" required>
+                    <select name="unit" required>
+                        <option value="kg">kg</option>
+                        <option value="ton">ton</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-form-btn">Submit Details</button>
+        </form>
+    </div>
+</div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const sb = window.supabase.createClient("{{ SUPABASE_URL }}", "{{ SUPABASE_ANON_KEY }}", {
+            auth: { flowType: 'implicit', persistSession: false }
+        });
+
+        async function googleLogin() {
+            await sb.auth.signInWithOAuth({
+                provider: 'google',
+                options: { redirectTo: window.location.origin + '/auth/callback' }
+            });
+        }
+
+        function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
+        function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
+        function openFormModal() { document.getElementById('formModal').style.display = 'flex'; }
+        function closeFormModal() { document.getElementById('formModal').style.display = 'none'; }
+
+        window.onclick = function(event) {
+            const authModal = document.getElementById('authModal');
+            const formModal = document.getElementById('formModal');
+            if (event.target == authModal) authModal.style.display = "none";
+            if (event.target == formModal) formModal.style.display = "none";
+        }
+
+        {% if request.args.get('login') and not user %}openAuthModal();{% endif %}
+    </script>
+</body>
+</html>
